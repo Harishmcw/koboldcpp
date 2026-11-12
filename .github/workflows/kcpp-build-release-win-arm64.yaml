@@ -1,6 +1,9 @@
 name: Koboldcpp Windows ARM64
 
 on:
+  push:
+    branches:
+      - test-woa-ci
   workflow_dispatch:
     inputs:
       commit_hash:
@@ -99,13 +102,6 @@ jobs:
           name: kcpp_windows_pyinstallers
           path: dist/
 
-      - name: Upload to GitHub Rolling Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          Copy-Item dist/koboldcpp-nocuda.exe koboldcpp-arm64.exe
-          gh release upload rolling koboldcpp-arm64.exe --clobber
-
       - name: Generate VK Instructions
         id: gen_vk_instructions
         run: |
@@ -170,13 +166,3 @@ jobs:
               legacy `
             -DestinationPath koboldcpp_tools.zip `
             -Force
-
-      - name: Upload tools to GitHub Rolling Tools Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: pwsh
-        run: |
-          Copy-Item koboldcpp_tools.zip koboldcpp_tools_arm64.zip
-          gh release upload kcpp_tools_rolling `
-            koboldcpp_tools_arm64.zip `
-            --clobber
